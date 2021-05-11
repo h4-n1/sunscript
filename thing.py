@@ -18,8 +18,8 @@ loc = LocationInfo("name", "region", testloc_tz, testloc_lat, testloc_long)
 #>timezone – The location’s time zone (a list of time zone names can be obtained from pytz.all_timezones)
 
 ### ASTRAL TESTS
-print (dawn(loc.observer, testdate, tzinfo=testloc_tz))
-print (sunrise(loc.observer, testdate, tzinfo=testloc_tz))
+#print (dawn(loc.observer, testdate, tzinfo=testloc_tz))
+#print (sunrise(loc.observer, testdate, tzinfo=testloc_tz))
 # print (sunset(loc.observer, testdate, tzinfo=testloc_tz))
 # print (dusk(loc.observer, testdate, tzinfo=testloc_tz))
 # this works ^
@@ -36,6 +36,14 @@ cal = Calendar()
 cal.add('prodid', '-//sunscript//h4n1//')
 cal.add('version', '0.1')
 
+foo1 = dawn(loc.observer, testdate, tzinfo=testloc_tz)
+print("one is ", foo1)
+foo2 = vDatetime(foo1  ).to_ical()
+print("two is ", foo2)
+foo3 = vDatetime(foo1)
+print("three is ", foo3)
+
+
 daystart = Event()
 daystart.add('summary', 'dusk to sunrise')
 # this might need modified date-time formatting
@@ -43,13 +51,19 @@ daystart.add('summary', 'dusk to sunrise')
 # using vDatetime around it shows the dtstart as <icalendar.prop.vDatetime object at 0x7f3e9b236dc0>
 # try converting astral output to python style values or something
 #daystart.add('dtstart', dawn(loc.observer, testdate, tzinfo=testloc_tz))
+
+daystart.add('dtstart', foo1)
+
 #daystart.add('dtend', sunrise(loc.observer, testdate, #tzinfo=testloc_tz))
 #daystart.add('dtstamp', testloc_tz)
+
+
+
 
 #>add the event to the calendar
 cal.add_component(daystart)
 
-print(cal)
+print("cal is ", cal)
 
 #>write to disk
 #import tempfile, os
@@ -58,6 +72,10 @@ print(cal)
 #f.write(cal.to_ical())
 #f.close()
 
+# write to disk
+import os
+f=open('test.txt', 'wb')
+f.write(cal.to_ical())
 
 
 
