@@ -1,2 +1,4 @@
 *.swp
 venv/
+*.kdev4
+*.ics
