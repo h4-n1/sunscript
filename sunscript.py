@@ -1,11 +1,6 @@
 from datetime import datetime, date, timezone, timedelta
 import pytz
 
-### ASTRAL STUFF
-# https://astral.readthedocs.io/en/latest/index.html
-from astral import LocationInfo
-from astral.sun import dawn, sunrise, sunset, dusk
-
 ### ALL USER INPUT HERE
 # define location and date range
 loc_name = 'Toronto'
@@ -20,16 +15,17 @@ date_start = date(2021, 1, 1)
 date_end = date(2022, 1, 1)
 output_filename = 'sun_{0}_{1}_{2}.ics'.format(loc_name.lower(), date_start, date_end)
 
+### ASTRAL STUFF
+# https://astral.readthedocs.io/en/latest/index.html
+from astral import LocationInfo
+from astral.sun import dawn, sunrise, sunset, dusk
+
 # set location
 loc = LocationInfo(loc_name, loc_region, loc_tz, loc_lat, loc_long)
-#>timezone – The location’s time zone (a list of time zone names can be obtained from pytz.all_timezones)
 
 ### ICAL STUFF
-
 # https://icalendar.readthedocs.io/en/latest/usage.html#example
 from icalendar import Calendar, Event, vDatetime, vText
-
-# maybe change the whole thing to use variables instead of calculating within the function, if it's going to be duplicated as strings in event descriptions anyway
 
 #>init the calendar
 cal = Calendar()
@@ -39,7 +35,6 @@ cal.add('prodid', '-//sunscript//h4n1//')
 # https://www.kanzaki.com/docs/ical/version.html
 cal.add('version', '2.0')
 
-### FOR LOOP SHOULD START HERE
 # from https://stackoverflow.com/a/1060330
 def daterange(start_date, end_date):
     for n in range(int((end_date - start_date).days)):
@@ -57,6 +52,9 @@ for loc_date in daterange(date_start, date_end):
 
     ### description vars
     
+    riseeventtitle = '↑ {0}'.format(risetime.strftime("%H:%M"))    
+    seteventtitle = '↓ {0}'.format(settime.strftime("%H:%M"))
+    
     # could move coordinates to 'GEO' property, see https://www.kanzaki.com/docs/ical/geo.html
     locstring = vText('{0} / {1}, {2}'.format(loc_name, loc_lat, loc_long))
     
@@ -67,7 +65,7 @@ for loc_date in daterange(date_start, date_end):
 
     # dawn to sunrise
     daystart = Event()
-    daystart.add('summary', '↑ {0}'.format(risetime.strftime("%H:%M")))
+    daystart.add('summary', riseeventtitle)
     daystart['uid'] = '{0}/SUNSCRIPT/SUNRISE/{1}'.format(loc_date, loc_name.upper())
     daystart.add('dtstamp', datetime.now(timezone.utc))
     daystart['location'] = locstring
@@ -78,7 +76,7 @@ for loc_date in daterange(date_start, date_end):
 
     # sunset to dusk
     dayend = Event()
-    dayend.add('summary', '↓ {0}'.format(settime.strftime("%H:%M")))
+    dayend.add('summary', seteventtitle)
     dayend['uid'] = '{0}/SUNSCRIPT/SUNSET/{1}'.format(loc_date, loc_name.upper())
     dayend.add('dtstamp', datetime.now(timezone.utc))
     dayend['location'] = locstring
