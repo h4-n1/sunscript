@@ -96,7 +96,7 @@ for loc_date in daterange(date_start, date_end):
 # write to disk
 import os
 # change to .ics
-f=open('test.ics.txt', 'wb')
+f=open('test.ics', 'wb')
 f.write(cal.to_ical())
 
 
