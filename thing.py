@@ -40,6 +40,8 @@ cal.add('prodid', '-//sunscript//h4n1//')
 # https://www.kanzaki.com/docs/ical/version.html
 cal.add('version', '2.0')
 
+### FOR LOOP SHOULD START HERE
+
 # info vars
 dawntime = dawn(loc.observer, loc_date, tzinfo=loc_tz)
 risetime = sunrise(loc.observer, loc_date, tzinfo=loc_tz)
@@ -77,8 +79,10 @@ dayend.add('dtstart', settime)
 dayend.add('dtend', dusktime)
 cal.add_component(dayend)
 
+### FOR LOOP SHOULD END HERE
+
 # just for debugging
-print("cal is ", cal)
+# print("cal is ", cal)
 
 # write to disk
 import os
