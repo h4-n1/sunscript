@@ -45,13 +45,18 @@ cal.add('version', '0.1')
 
 
 daystart = Event()
-daystart.add('summary', 'dusk to sunrise')
-
+daystart.add('summary', 'dawn to sunrise')
 daystart.add('dtstart', dawn(loc.observer, testdate, tzinfo=testloc_tz))
 daystart.add('dtend', sunrise(loc.observer, testdate, tzinfo=testloc_tz))
 
 #>add the event to the calendar
 cal.add_component(daystart)
+
+dayend = Event()
+dayend.add('summary', 'sunset to dusk')
+dayend.add('dtstart', sunset(loc.observer, testdate, tzinfo=testloc_tz))
+dayend.add('dtend', dusk(loc.observer, testdate, tzinfo=testloc_tz))
+cal.add_component(dayend)
 
 print("cal is ", cal)
 
@@ -64,7 +69,8 @@ print("cal is ", cal)
 
 # write to disk
 import os
-f=open('test4.txt', 'wb')
+# change to .ics
+f=open('test.txt', 'wb')
 f.write(cal.to_ical())
 
 
