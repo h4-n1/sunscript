@@ -1,5 +1,4 @@
-from datetime import datetime
-from datetime import date
+from datetime import datetime, date, timezone
 import pytz
 
 ### ASTRAL STUFF
@@ -34,8 +33,10 @@ from icalendar import Calendar, Event, vDatetime, vText
 #>init the calendar
 cal = Calendar()
 #>compliance properties
+# https://www.kanzaki.com/docs/ical/prodid.html
 cal.add('prodid', '-//sunscript//h4n1//')
-cal.add('version', '0.1')
+# https://www.kanzaki.com/docs/ical/version.html
+cal.add('version', '2.0')
 
 # info vars
 risetime = sunrise(loc.observer, loc_date, tzinfo=loc_tz).strftime("%H:%M:%S")
@@ -49,7 +50,8 @@ daystart.add('dtstart', dawn(loc.observer, loc_date, tzinfo=loc_tz))
 daystart.add('dtend', sunrise(loc.observer, loc_date, tzinfo=loc_tz))
 daystart['location'] = locstring
 # needs a uid
-#daystart['uid'] = ''
+daystart['uid'] = '{0}/SUNSCRIPT/RISE'.format(loc_date)
+daystart.add('dtstamp', datetime.now(timezone.utc))
 
 
 #>add the event to the calendar
@@ -60,6 +62,9 @@ dayend.add('summary', '↓ {0}'.format(settime))
 dayend.add('dtstart', sunset(loc.observer, loc_date, tzinfo=loc_tz))
 dayend.add('dtend', dusk(loc.observer, loc_date, tzinfo=loc_tz))
 dayend['location'] = locstring
+dayend['uid'] = '{0}/SUNSCRIPT/SET'.format(loc_date)
+dayend.add('dtstamp', datetime.now(timezone.utc))
+
 
 cal.add_component(dayend)
 
