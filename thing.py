@@ -6,14 +6,16 @@ import pytz
 from astral import LocationInfo
 from astral.sun import dawn, sunrise, sunset, dusk
 
-# define test location
+# define location
+loc_name = 'Toronto'
+loc_region = 'Ontario'
 loc_lat = 43.651070
 loc_long = -79.347015
 loc_tz = 'US/Eastern'
 loc_date=date(2021,5,9)
 
 # set location
-loc = LocationInfo("name", "region", loc_tz, loc_lat, loc_long)
+loc = LocationInfo(loc_name, loc_region, loc_tz, loc_lat, loc_long)
 #>timezone – The location’s time zone (a list of time zone names can be obtained from pytz.all_timezones)
 
 ### ASTRAL TESTS
@@ -43,9 +45,9 @@ dawntime = dawn(loc.observer, loc_date, tzinfo=loc_tz)
 risetime = sunrise(loc.observer, loc_date, tzinfo=loc_tz)
 settime = sunset(loc.observer, loc_date, tzinfo=loc_tz)
 dusktime = dusk(loc.observer, loc_date, tzinfo=loc_tz)
-locstring = vText('{0}, {1}'.format(loc_lat, loc_long))
-#suntime = settime - risetime
+locstring = vText('{0}, {1}, {2}'.format(loc_name, loc_lat, loc_long))
 # timedelta doesn't allow strftime, find a way to format it better
+# see https://stackoverflow.com/questions/538666/format-timedelta-to-string
 risedesc = 'Dawn at {0}, sunrise at {1}. Total sunlight time {2}'.format(dawntime.strftime("%H:%M"), risetime.strftime("%H:%M"), str(settime - risetime))
 
 setdesc = 'Sunset at {0}, dusk at {1}. Total sunlight time {2}'.format(settime.strftime("%H:%M"), dusktime.strftime("%H:%M"), str(settime - risetime))
@@ -61,7 +63,6 @@ daystart['location'] = locstring
 daystart['description'] = risedesc
 daystart.add('dtstart', dawn(loc.observer, loc_date, tzinfo=loc_tz))
 daystart.add('dtend', sunrise(loc.observer, loc_date, tzinfo=loc_tz))
-
 
 #>add the event to the calendar
 cal.add_component(daystart)
