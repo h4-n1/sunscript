@@ -29,20 +29,11 @@ loc = LocationInfo("name", "region", testloc_tz, testloc_lat, testloc_long)
 # https://icalendar.readthedocs.io/en/latest/usage.html#example
 from icalendar import Calendar, Event, vDatetime
 
-
 #>init the calendar
 cal = Calendar()
 #>compliance properties
 cal.add('prodid', '-//sunscript//h4n1//')
 cal.add('version', '0.1')
-
-#foo1 = dawn(loc.observer, testdate, tzinfo=testloc_tz)
-#print("one is ", foo1)
-#foo2 = vDatetime(foo1  ).to_ical()
-#print("two is ", foo2)
-#foo3 = vDatetime(foo1)
-#print("three is ", foo3)
-
 
 daystart = Event()
 daystart.add('summary', 'dawn to sunrise')
@@ -59,13 +50,6 @@ dayend.add('dtend', dusk(loc.observer, testdate, tzinfo=testloc_tz))
 cal.add_component(dayend)
 
 print("cal is ", cal)
-
-#>write to disk
-#import tempfile, os
-#directory = tempfile.mkdtemp()
-#f = open(os.path.join(directory, 'test.ics'), 'wb')
-#f.write(cal.to_ical())
-#f.close()
 
 # write to disk
 import os
