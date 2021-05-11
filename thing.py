@@ -45,9 +45,10 @@ dawntime = dawn(loc.observer, loc_date, tzinfo=loc_tz)
 risetime = sunrise(loc.observer, loc_date, tzinfo=loc_tz)
 settime = sunset(loc.observer, loc_date, tzinfo=loc_tz)
 dusktime = dusk(loc.observer, loc_date, tzinfo=loc_tz)
+
+# description vars
 locstring = vText('{0}, {1}, {2}'.format(loc_name, loc_lat, loc_long))
-# timedelta doesn't allow strftime, find a way to format it better
-# see https://stackoverflow.com/questions/538666/format-timedelta-to-string
+# timedelta doesn't allow strftime, find a way to format it better, see https://stackoverflow.com/questions/538666/format-timedelta-to-string
 risedesc = 'Dawn at {0}, sunrise at {1}. Total sunlight time {2}'.format(dawntime.strftime("%H:%M"), risetime.strftime("%H:%M"), str(settime - risetime))
 
 setdesc = 'Sunset at {0}, dusk at {1}. Total sunlight time {2}'.format(settime.strftime("%H:%M"), dusktime.strftime("%H:%M"), str(settime - risetime))
@@ -61,9 +62,8 @@ daystart['uid'] = '{0}/SUNSCRIPT/RISE'.format(loc_date)
 daystart.add('dtstamp', datetime.now(timezone.utc))
 daystart['location'] = locstring
 daystart['description'] = risedesc
-daystart.add('dtstart', dawn(loc.observer, loc_date, tzinfo=loc_tz))
-daystart.add('dtend', sunrise(loc.observer, loc_date, tzinfo=loc_tz))
-
+daystart.add('dtstart', dawntime)
+daystart.add('dtend', risetime)
 #>add the event to the calendar
 cal.add_component(daystart)
 
@@ -73,12 +73,11 @@ dayend['uid'] = '{0}/SUNSCRIPT/SET'.format(loc_date)
 dayend.add('dtstamp', datetime.now(timezone.utc))
 dayend['location'] = locstring
 dayend['description'] = setdesc
-dayend.add('dtstart', sunset(loc.observer, loc_date, tzinfo=loc_tz))
-dayend.add('dtend', dusk(loc.observer, loc_date, tzinfo=loc_tz))
-
-
+dayend.add('dtstart', settime)
+dayend.add('dtend', dusktime)
 cal.add_component(dayend)
 
+# just for debugging
 print("cal is ", cal)
 
 # write to disk
