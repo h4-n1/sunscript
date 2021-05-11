@@ -27,7 +27,7 @@ loc = LocationInfo("name", "region", loc_tz, loc_lat, loc_long)
 ### ICAL STUFF
 
 # https://icalendar.readthedocs.io/en/latest/usage.html#example
-from icalendar import Calendar, Event, vDatetime
+from icalendar import Calendar, Event, vDatetime, vText
 
 # maybe change the whole thing to use variables instead of calculating within the function, if it's going to be duplicated as strings in event descriptions anyway
 
@@ -40,12 +40,17 @@ cal.add('version', '0.1')
 # info vars
 risetime = sunrise(loc.observer, loc_date, tzinfo=loc_tz).strftime("%H:%M:%S")
 settime = sunset(loc.observer, loc_date, tzinfo=loc_tz).strftime("%H:%M:%S")
+locstring = vText('{0}, {1}'.format(loc_lat, loc_long))
 
 # dawn to sunrise
 daystart = Event()
 daystart.add('summary', '↑ {0}'.format(risetime))
 daystart.add('dtstart', dawn(loc.observer, loc_date, tzinfo=loc_tz))
 daystart.add('dtend', sunrise(loc.observer, loc_date, tzinfo=loc_tz))
+daystart['location'] = locstring
+# needs a uid
+#daystart['uid'] = ''
+
 
 #>add the event to the calendar
 cal.add_component(daystart)
@@ -54,6 +59,8 @@ dayend = Event()
 dayend.add('summary', '↓ {0}'.format(settime))
 dayend.add('dtstart', sunset(loc.observer, loc_date, tzinfo=loc_tz))
 dayend.add('dtend', dusk(loc.observer, loc_date, tzinfo=loc_tz))
+dayend['location'] = locstring
+
 cal.add_component(dayend)
 
 print("cal is ", cal)
