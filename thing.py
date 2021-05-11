@@ -35,8 +35,13 @@ cal = Calendar()
 cal.add('prodid', '-//sunscript//h4n1//')
 cal.add('version', '0.1')
 
+# info vars
+risetime = sunrise(loc.observer, testdate, tzinfo=testloc_tz).strftime("%H:%M:%S")
+settime = sunset(loc.observer, testdate, tzinfo=testloc_tz).strftime("%H:%M:%S")
+
+# dawn to sunrise
 daystart = Event()
-daystart.add('summary', 'dawn to sunrise')
+daystart.add('summary', '↑ {0}'.format(risetime))
 daystart.add('dtstart', dawn(loc.observer, testdate, tzinfo=testloc_tz))
 daystart.add('dtend', sunrise(loc.observer, testdate, tzinfo=testloc_tz))
 
@@ -44,7 +49,7 @@ daystart.add('dtend', sunrise(loc.observer, testdate, tzinfo=testloc_tz))
 cal.add_component(daystart)
 
 dayend = Event()
-dayend.add('summary', 'sunset to dusk')
+dayend.add('summary', '↓ {0}'.format(settime))
 dayend.add('dtstart', sunset(loc.observer, testdate, tzinfo=testloc_tz))
 dayend.add('dtend', dusk(loc.observer, testdate, tzinfo=testloc_tz))
 cal.add_component(dayend)
