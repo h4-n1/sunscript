@@ -2,3 +2,4 @@
 venv/
 *.kdev4
 *.ics
+*.backup
