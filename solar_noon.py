@@ -10,9 +10,9 @@ loc_lat = 43.651070
 loc_long = -79.347015
 # is there a better way to define timezone?
 loc_tz = 'America/Toronto'
-date_start = date(2021, 1, 1)
+date_start = date(2021, 5, 17)
 # daterange function is exclusive of end date
-date_end = date(2022, 1, 1)
+date_end = date(2021, 6, 1)
 output_filename = 'noon_{0}_{1}_{2}.ics'.format(loc_name.lower(), date_start, date_end)
 # how long before and after the moment of noon should the calendar event last?
 ### look up which format this should be in
@@ -24,7 +24,7 @@ output_filename = 'noon_{0}_{1}_{2}.ics'.format(loc_name.lower(), date_start, da
 ### ASTRAL STUFF
 # https://astral.readthedocs.io/en/latest/index.html
 from astral import LocationInfo
-from astral.sun import noon
+from astral.sun import noon, elevation
 
 # set location
 loc = LocationInfo(loc_name, loc_region, loc_tz, loc_lat, loc_long)
@@ -49,13 +49,14 @@ def daterange(start_date, end_date):
 for loc_date in daterange(date_start, date_end):
     
     time_noon = noon(loc.observer, loc_date, tzinfo=loc_tz)
-    
+    elevation_noon = elevation(loc.observer, time_noon)
+
     ### event description vars
     
     event_title_noon = "☼ {0}".format(time_noon.strftime("%H:%M"))
     event_location = vText('{0} / {1}, {2}'.format(loc_name, loc_lat, loc_long))
     # add something about time at certain angles
-    event_desc_noon = "Solar noon at {0}".format(time_noon.strftime("%H:%M"))
+    event_desc_noon = "Solar noon at {0}, solar elevation {1}".format(time_noon.strftime("%H:%M"), elevation_noon)
     
     daynoon = Event()
     daynoon.add('summary', event_title_noon)
